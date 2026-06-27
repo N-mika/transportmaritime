@@ -72,7 +72,7 @@ const AuthPage = () => {
             </div>
           </div>
           <div>
-            <CardTitle className="text-2xl text-black mb-2">Bienvenue sur Saint Jude</CardTitle>
+            <CardTitle className="text-2xl text-black mb-2">Bienvenue sur {NAMEAPP}</CardTitle>
             <p className="text-sm text-slate-600 mt-1">Gestion du transport maritime de marchandises</p>
             <p className="text-sm text-slate-600 mt-1">email : admin@transmaritime.com , mdp : 0000</p>
           </div>
