@@ -31,7 +31,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use("/api", auth, stJudeRouter, audit, notificationRouter);
+app.use("/", auth, stJudeRouter, audit, notificationRouter);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);
