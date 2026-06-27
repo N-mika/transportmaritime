@@ -3,7 +3,7 @@ import { AuditLog } from "../model/AuditLog";
 
 export const auditPlugin = (
   schema: Schema,
-  options?: { collectionName?: string }
+  options?: { collectionName?: string },
 ) => {
   const collectionName =
     options?.collectionName || schema.options.collection || "Unknown";

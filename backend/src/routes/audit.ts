@@ -6,7 +6,7 @@ const router = Router();
 // Récupérer tous les logs
 router.get("/allaudit", async (req: Request, res: Response) => {
   try {
-    const logs = await AuditLog.find().sort({ createdAt: -1}); // récupère tout
+    const logs = await AuditLog.find().sort({ createdAt: -1 }); // récupère tout
     res.status(200).json(logs);
   } catch (err: any) {
     res.status(500).json({
@@ -18,12 +18,16 @@ router.get("/allaudit", async (req: Request, res: Response) => {
 router.get("/audit/:afterId", async (req, res) => {
   try {
     const { afterId } = req.params;
-    
-    const audits = await AuditLog.find({ "after.id": afterId }).sort({ createdAt: -1 });
+
+    const audits = await AuditLog.find({ "after.id": afterId }).sort({
+      createdAt: -1,
+    });
 
     res.json(audits);
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération de l'audit", error });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération de l'audit", error });
   }
 });
 

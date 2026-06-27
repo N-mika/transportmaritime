@@ -1,7 +1,13 @@
 import { Document } from "mongoose";
 // ENUMS
 export type Etat = "Encours" | "Arriver" | "Depart";
-export type EtatBoat = "En construction"|"En service" |"En maintenance" | "En panne" | "Désarmé" | "Hors service"
+export type EtatBoat =
+  | "En construction"
+  | "En service"
+  | "En maintenance"
+  | "En panne"
+  | "Désarmé"
+  | "Hors service";
 
 // ENTITY: User
 export interface User extends Document {
@@ -14,7 +20,7 @@ export interface User extends Document {
   role: string;
 }
 // ENTITY: Goods
-export interface Goods extends Document{
+export interface Goods extends Document {
   id: string;
   itemName: string; // nomMarchandise
   type: string; // typeMarchandise 'fragile','General','agricole'
@@ -36,7 +42,7 @@ export interface Goods extends Document{
 }
 
 // ENTITY: Reservation
-export interface Reservation extends Document{
+export interface Reservation extends Document {
   id: string;
   clientName: string;
   clientTel: string;
@@ -54,9 +60,14 @@ export interface Reservation extends Document{
   paymentStatus: boolean; // statutPaiement
   tripId: string;
   userId: string;
-  idCashMovement : string;
+  idCashMovement: string;
   invoiceNumber: string;
-  paymentMethod: "Espèces" | "Orange Money" | "MVola" | "Airtel Money" | "Chèque";
+  paymentMethod:
+    | "Espèces"
+    | "Orange Money"
+    | "MVola"
+    | "Airtel Money"
+    | "Chèque";
   paymentRef?: string;
   isConfirmed: boolean;
   validatedBy?: string | null;
@@ -64,7 +75,7 @@ export interface Reservation extends Document{
 }
 
 // ENTITY: Trip
-export interface Trip extends Document{
+export interface Trip extends Document {
   id: string;
   boatId: string;
   depart: string;
@@ -73,11 +84,11 @@ export interface Trip extends Document{
   from: string;
   to: string;
   status: string;
-  userId:string;
+  userId: string;
 }
 
 // ENTITY: Boat
-export interface Boat extends Document{
+export interface Boat extends Document {
   id: string;
   name: string;
   capacity: number;
@@ -86,13 +97,13 @@ export interface Boat extends Document{
 }
 
 // ENTITY: CashMovement
-export interface CashMovement extends Document{
+export interface CashMovement extends Document {
   id: string;
   designation: string;
   credit: number;
   debit: number;
   tripId?: string;
-  type : "debit" | "credit";
+  type: "debit" | "credit";
   goodsId?: string; // marchandiseId
   userId: string;
   date: string;
@@ -101,16 +112,16 @@ export interface CashMovement extends Document{
 }
 
 // ENTITY: FuelConsumption
-export interface FuelConsumption extends Document{
+export interface FuelConsumption extends Document {
   id: string;
   tripId: string;
-  quantity: number;          // quantité consommée
+  quantity: number; // quantité consommée
   fuelType: string;
-  fuelPrice: number;        // prix unitaire
-  cost: number;             // coût total
-  userId : string
+  fuelPrice: number; // prix unitaire
+  cost: number; // coût total
+  userId: string;
 
-  remainingFuel?: number;    // stock restant
+  remainingFuel?: number; // stock restant
 
   createdAt?: string;
 }

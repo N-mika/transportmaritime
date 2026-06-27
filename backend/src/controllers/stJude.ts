@@ -18,23 +18,23 @@ import Port from "../model/Port";
 // GET ALL
 const getAll =
   <T extends Document>(Model: Model<T>, name: string) =>
-    async (req: Request, res: Response) => {
-      try {
-        const schemaPaths = Object.keys(Model.schema.paths);
-        const sortField = schemaPaths.includes("depart")
-          ? "depart"
-          : schemaPaths.includes("date")
+  async (req: Request, res: Response) => {
+    try {
+      const schemaPaths = Object.keys(Model.schema.paths);
+      const sortField = schemaPaths.includes("depart")
+        ? "depart"
+        : schemaPaths.includes("date")
           ? "date"
-          : "id"; 
+          : "id";
 
-        const data = await Model.find().sort({ [sortField]: -1 });
-        res.status(200).json(data);
-      } catch (err: any) {
-        res.status(500).json({
-          error: `Erreur lors de la récupération des ${name}: ${err.message}`,
-        });
-      }
-    };
+      const data = await Model.find().sort({ [sortField]: -1 });
+      res.status(200).json(data);
+    } catch (err: any) {
+      res.status(500).json({
+        error: `Erreur lors de la récupération des ${name}: ${err.message}`,
+      });
+    }
+  };
 
 // GET BY ID
 export const getUserById = async (req: Request, res: Response) => {
@@ -46,118 +46,129 @@ export const getUserById = async (req: Request, res: Response) => {
     }
     res.status(200).json(user);
   } catch (err: any) {
-    res.status(500).json({ error: `Erreur lors de la récupération de l'utilisateur: ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Erreur lors de la récupération de l'utilisateur: ${err.message}`,
+      });
   }
 };
 
 // CREATE
 const createOne =
   <T extends Document>(Model: Model<T>, name: string) =>
-    async (req: Request, res: Response) => {
-      try {
-        const userId = req.body.userId || "user";
-        const data = { ...req.body, userId };
-        if (Model.modelName === "User" && data.password) {
-          const hashedPassword = await bcrypt.hash(data.password, 10);
-          data.password = hashedPassword;
-        }
-        const doc = await Model.create(data);
-        res.status(201).json(doc);
-      } catch (err: any) {
-        res.status(400).json({
-          error: `Erreur lors de la création du ${name}: ${err.message}`,
-        });
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.body.userId || "user";
+      const data = { ...req.body, userId };
+      if (Model.modelName === "User" && data.password) {
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        data.password = hashedPassword;
       }
-    };
+      const doc = await Model.create(data);
+      res.status(201).json(doc);
+    } catch (err: any) {
+      res.status(400).json({
+        error: `Erreur lors de la création du ${name}: ${err.message}`,
+      });
+    }
+  };
 
 // UPDATE
 const updateOne =
   <T extends Document>(Model: Model<T>, name: string) =>
-    async (req: Request, res: Response) => {
-      const id = req.params.id;
-      const values = req.body;
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const values = req.body;
 
-      try {
-        if (Model.modelName === "User") {
-          // Récupérer l'utilisateur existant
-          const existingUser: any = await Model.findOne({ id });
+    try {
+      if (Model.modelName === "User") {
+        // Récupérer l'utilisateur existant
+        const existingUser: any = await Model.findOne({ id });
 
-          if (!existingUser) {
-            return res.status(404).json({ error: `${name} not found` });
-          }
-
-           //  changement de mot de passe
-          if (values.oldPassword && values.newPassword) {
-            const { oldPassword, newPassword } = values;
-
-            // Comparer ancien mot de passe
-            const isMatch = await bcrypt.compare(oldPassword, existingUser.password);
-            if (!isMatch) {
-              return res.status(400).json({ error: "Ancien mot de passe incorrect." });
-            }
-
-            // Vérifier que le nouveau mot de passe n'est pas identique
-            const isSameAsOld = await bcrypt.compare(newPassword, existingUser.password);
-            if (isSameAsOld) {
-              return res.status(400).json({
-                error: "Le nouveau mot de passe doit être différent de l'ancien.",
-              });
-            }
-
-            // Hasher le nouveau mot de passe
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            values.password = hashedPassword;
-            delete values.oldPassword;
-            delete values.newPassword;
-          }
-          // si pas de changement de mot de passe
-          else if (!values.password || values.password.trim() === "") {
-            values.password = existingUser.password;
-          } else if (values.password !== existingUser.password) {
-            const hashedPassword = await bcrypt.hash(values.password, 10);
-            values.password = hashedPassword;
-          }
+        if (!existingUser) {
+          return res.status(404).json({ error: `${name} not found` });
         }
 
-        const doc = await Model.findOneAndUpdate(
-          { id },
-          { $set: values },
-          { new: true, runValidators: true }
-        );
+        //  changement de mot de passe
+        if (values.oldPassword && values.newPassword) {
+          const { oldPassword, newPassword } = values;
 
-        // if (!doc) {
-        //   return res.status(404).json({ error: `${name} not found` });
-        // }
+          // Comparer ancien mot de passe
+          const isMatch = await bcrypt.compare(
+            oldPassword,
+            existingUser.password,
+          );
+          if (!isMatch) {
+            return res
+              .status(400)
+              .json({ error: "Ancien mot de passe incorrect." });
+          }
 
-        res.status(200).json(doc);
-      } catch (err: any) {
-        res.status(400).json({
-          error: `Erreur lors de la mise à jour du ${name}: ${err.message}`,
-        });
+          // Vérifier que le nouveau mot de passe n'est pas identique
+          const isSameAsOld = await bcrypt.compare(
+            newPassword,
+            existingUser.password,
+          );
+          if (isSameAsOld) {
+            return res.status(400).json({
+              error: "Le nouveau mot de passe doit être différent de l'ancien.",
+            });
+          }
+
+          // Hasher le nouveau mot de passe
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+          values.password = hashedPassword;
+          delete values.oldPassword;
+          delete values.newPassword;
+        }
+        // si pas de changement de mot de passe
+        else if (!values.password || values.password.trim() === "") {
+          values.password = existingUser.password;
+        } else if (values.password !== existingUser.password) {
+          const hashedPassword = await bcrypt.hash(values.password, 10);
+          values.password = hashedPassword;
+        }
       }
-    };
+
+      const doc = await Model.findOneAndUpdate(
+        { id },
+        { $set: values },
+        { new: true, runValidators: true },
+      );
+
+      // if (!doc) {
+      //   return res.status(404).json({ error: `${name} not found` });
+      // }
+
+      res.status(200).json(doc);
+    } catch (err: any) {
+      res.status(400).json({
+        error: `Erreur lors de la mise à jour du ${name}: ${err.message}`,
+      });
+    }
+  };
 
 // DELETE
 const deleteOne =
   <T extends Document>(Model: Model<T>, name: string) =>
-    async (req: Request, res: Response) => {
-      const id = req.params.id;
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
 
-      console.log(id, Model)
-      try {
-        const doc = await Model.findOneAndDelete({ id });
-        // if (!doc) {
-        //   return res.status(404).json({ error: `${name} not found` });
-        // }
-        console.log(doc)
-        res.status(200).json({ message: `${name} deleted successfully` });
-      } catch (err: any) {
-        res.status(400).json({
-          error: `Erreur lors de la suppression du ${name}: ${err.message}`,
-        });
-      }
-    };
-
+    console.log(id, Model);
+    try {
+      const doc = await Model.findOneAndDelete({ id });
+      // if (!doc) {
+      //   return res.status(404).json({ error: `${name} not found` });
+      // }
+      console.log(doc);
+      res.status(200).json({ message: `${name} deleted successfully` });
+    } catch (err: any) {
+      res.status(400).json({
+        error: `Erreur lors de la suppression du ${name}: ${err.message}`,
+      });
+    }
+  };
 
 // ========== EXPORTS ==========
 
@@ -186,7 +197,7 @@ export const creatOldUser = createOne(OldUser, "old users");
 export const createCashMovement = createOne(CashMovement, "cash movement");
 export const createFuelConsumption = createOne(
   FuelConsumption,
-  "fuel consumption"
+  "fuel consumption",
 );
 export const createMenu = createOne(Menu, "menu");
 export const createRole = createOne(Role, "role");
@@ -200,7 +211,10 @@ export const updateGoods = updateOne(Goods, "Goods");
 export const updateReservation = updateOne(Reservation, "Reservation");
 export const updateTrip = updateOne(Trip, "Trip");
 export const updateCashMovement = updateOne(CashMovement, "CashMovement");
-export const updateFuelConsumption = updateOne(FuelConsumption, "FuelConsumption");
+export const updateFuelConsumption = updateOne(
+  FuelConsumption,
+  "FuelConsumption",
+);
 export const updateUser = updateOne(User, "User");
 export const updateMenu = updateOne(Menu, "Menu");
 export const updateRole = updateOne(Role, "Role");
@@ -214,7 +228,10 @@ export const deleteGoods = deleteOne(Goods, "Goods");
 export const deleteReservation = deleteOne(Reservation, "Reservation");
 export const deleteTrip = deleteOne(Trip, "Trip");
 export const deleteCashMovement = deleteOne(CashMovement, "CashMovement");
-export const deleteFuelConsumption = deleteOne(FuelConsumption, "FuelConsumption");
+export const deleteFuelConsumption = deleteOne(
+  FuelConsumption,
+  "FuelConsumption",
+);
 export const deleteUser = deleteOne(User, "User");
 export const deleteMenu = deleteOne(Menu, "Menu");
 export const deleteRole = deleteOne(Role, "Role");

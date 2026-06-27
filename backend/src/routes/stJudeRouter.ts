@@ -146,5 +146,4 @@ router.post("/ports", createPort);
 router.put("/ports/:id", updatePort);
 router.delete("/ports/:id", deletePort);
 
-
 export default router;

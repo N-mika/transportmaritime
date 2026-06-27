@@ -1,9 +1,9 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
   getNotifications,
   createNotification,
   updateNotification,
-  deleteNotification
+  deleteNotification,
 } from "../controllers/stJude";
 
 const router = Router();

@@ -21,6 +21,7 @@ import { onGetByIdService, onGetService } from "../data/service";
 import { Menu, Role } from "../data/type";
 import { setRoles } from "../redux/feature/roles";
 import { toast } from "react-toastify";
+import { NAMEAPP } from "../Tools/setting";
 
 interface SidebarProps {
   activeTab: string;
@@ -141,7 +142,7 @@ const Sidebar: FC<SidebarProps> = ({ activeTab, onTabChange }) => {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-sidebar-foreground">
-                  SaintJUDE
+                  {NAMEAPP}
                 </h1>
                 {currentUser && (
                   <p className="text-xs text-sidebar-foreground/70">
@@ -202,7 +203,7 @@ const Sidebar: FC<SidebarProps> = ({ activeTab, onTabChange }) => {
             {!isCollapsed && "Se déconnecter"}
           </Button>
           <div className="text-xs text-sidebar-foreground/70 text-center">
-            © {date.getFullYear()} SaintJUDE
+            © {date.getFullYear() } {NAMEAPP} 
           </div>
         </div>
       </div>

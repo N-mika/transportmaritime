@@ -29,9 +29,9 @@ app.use(
     origin: "http://localhost:5173",
     // origin: "https://stjude-frontend.vercel.app",
     credentials: true,
-  })
+  }),
 );
-app.use("/api", auth, stJudeRouter, audit,  notificationRouter);
+app.use("/api", auth, stJudeRouter, audit, notificationRouter);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);

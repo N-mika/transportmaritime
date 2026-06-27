@@ -10,6 +10,7 @@ import { User as UserIcon, Lock, Ship, Eye, EyeOff } from "lucide-react";
 import { loginService, onGetService } from "../data/service";
 import { Role, User } from "../data/type";
 import Loader from "./tools/Loader";
+import { NAMEAPP } from "../Tools/setting";
 
 const AuthPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -73,6 +74,7 @@ const AuthPage = () => {
           <div>
             <CardTitle className="text-2xl text-black mb-2">Bienvenue sur Saint Jude</CardTitle>
             <p className="text-sm text-slate-600 mt-1">Gestion du transport maritime de marchandises</p>
+            <p className="text-sm text-slate-600 mt-1">email : admin@transmaritime.com , mdp : 0000</p>
           </div>
         </CardHeader>
         <CardContent>
@@ -121,7 +123,7 @@ const AuthPage = () => {
           </form>
         </CardContent>
         <div className="text-center text-xs text-gray-500">
-          Saint Jude - Transport Maritime Antalaha ↔ Toamasina
+          {NAMEAPP} - Transport Maritime A ↔ B
         </div>
       </Card>
     </div>

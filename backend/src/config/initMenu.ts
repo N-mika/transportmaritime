@@ -6,7 +6,7 @@ const menuItems = [
     label: "Tableau de Bord",
     icon: "BarChart3",
     description: "Vue d'ensemble",
-    permission: "dashboard:read"
+    permission: "dashboard:read",
   },
   {
     id: "merchandise",
